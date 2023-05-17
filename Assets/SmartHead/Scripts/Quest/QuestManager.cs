@@ -2,25 +2,26 @@ using System;
 using System.Threading;
 using SmartHead.HandControl.Interfaces;
 using SmartHead.Quest.Displays;
+using SmartHead.Quest.Interfaces;
 using Zenject;
 
 namespace SmartHead.Quest
 {
     public class QuestManager: IInitializable, IDisposable
     {
-        private readonly QuestNode _startNode;
         private readonly QuestNodeDisplay _questNodeDisplay;
         private readonly IScreenControl _screenControl;
         private readonly QuestFinishDisplay _questFinishDisplay;
         private readonly QuestStartDisplay _questStartDisplay;
+        private readonly IQuestProvider _questProvider;
 
-        public QuestManager(QuestNode startNode, QuestNodeDisplay questNodeDisplay, IScreenControl screenControl, QuestFinishDisplay questFinishDisplay, QuestStartDisplay questStartDisplay)
+        public QuestManager(QuestNodeDisplay questNodeDisplay, IScreenControl screenControl, QuestFinishDisplay questFinishDisplay, QuestStartDisplay questStartDisplay, IQuestProvider questProvider)
         {
-            _startNode = startNode;
             _questNodeDisplay = questNodeDisplay;
             _screenControl = screenControl;
             _questFinishDisplay = questFinishDisplay;
             _questStartDisplay = questStartDisplay;
+            _questProvider = questProvider;
         }
 
         public void Initialize()
@@ -34,30 +35,32 @@ namespace SmartHead.Quest
         private void QuestStartDisplayOnQuestStarted()
         {
             _questStartDisplay.SetActive(false);
-            _questNodeDisplay.Fill(_startNode);
+            _questNodeDisplay.Fill(_questProvider.GetStartNode());
         }
 
         private void ScreenControlOnRestart()
         {
-            _questStartDisplay.SetActive(true);
+            _questStartDisplay.SetActive(false);
             _questFinishDisplay.UnFill();
             _questNodeDisplay.UnFill();
         }
 
         private void ScreenControlOnStart()
         {
+            _questStartDisplay.SetActive(true);
         }
 
-        private void QuestNodeDisplayOnOptionSelected(QuestNode.Option selectedOption)
+        private void QuestNodeDisplayOnOptionSelected(IOptionModel selectedOption)
         {
             _questNodeDisplay.UnFill();
-            if (selectedOption.Node.NodeType == QuestNode.NodeTypes.Options)
+            var nextQuestion = _questProvider.FromPlayerResponse(selectedOption);
+            if (nextQuestion.NodeType == NodeTypes.Options)
             {
-                _questNodeDisplay.Fill(selectedOption.Node);
+                _questNodeDisplay.Fill(nextQuestion);
             }
             else
             {
-                _questFinishDisplay.Fill(selectedOption.Node);
+                _questFinishDisplay.Fill(nextQuestion);
             }
         }
 

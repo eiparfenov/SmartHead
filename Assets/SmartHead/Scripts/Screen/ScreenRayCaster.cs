@@ -12,6 +12,7 @@ namespace SmartHead.Screen
 {
     public class ScreenRayCaster: IInitializable, IDisposable
     {
+        private const bool ShowDebugSphere = false;
         private readonly ScreenInfoProvider _screenInfo;
         private readonly IScreenControl _screenControl;
         private readonly EventSystem _eventSystem;
@@ -20,7 +21,7 @@ namespace SmartHead.Screen
         private Collider _activeCollider;
         private UiElement _activeUiElement;
         private int _clicks;
-        //private GameObject _debugSphere;
+        private GameObject _debugSphere;
 
         [Inject]
         public ScreenRayCaster(ScreenInfoProvider screenInfo, IScreenControl screenControl, EventSystem eventSystem, PointerSettings settings)
@@ -35,8 +36,8 @@ namespace SmartHead.Screen
         {
             _screenControl.HandPosition.onValueChanged += HandPositionOnValueChanged;
             _screenControl.onClick += ScreenControlOnClick;
-            //_debugSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //_debugSphere.transform.localScale = Vector3.one * .1f;
+            if(ShowDebugSphere) _debugSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            if(ShowDebugSphere) _debugSphere.transform.localScale = Vector3.one * .1f;
         }
 
         private async void ScreenControlOnClick(Vector2 pos)
@@ -83,8 +84,8 @@ namespace SmartHead.Screen
                                 Vector3.up * _screenInfo.Size.y * _screenInfo.Scale.y * pos. y + 
                                 _screenInfo.Right * _screenInfo.Size.x * _screenInfo.Scale.x * pos.x + 
                                 _screenInfo.Forward * .01f;
-
-            //_debugSphere.transform.position = raycastOrigin;
+            
+            if(ShowDebugSphere) _debugSphere.transform.position = raycastOrigin;
 
             
             var collided = Physics.Raycast(raycastOrigin, -_screenInfo.Forward, out var raycastHit,.1f);

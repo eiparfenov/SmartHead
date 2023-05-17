@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SmartHead.Infrastructure.Quest.Factories;
+using SmartHead.Quest.Interfaces;
 using TMPro;
 
 namespace SmartHead.Quest.Displays
@@ -12,7 +13,7 @@ namespace SmartHead.Quest.Displays
         
         private readonly List<OptionDisplay> _createOptionDisplays;
 
-        public event Action<QuestNode.Option> onOptionSelected;
+        public event Action<IOptionModel> onOptionSelected;
 
         public QuestNodeDisplay(TextMeshProUGUI text, OptionDisplayFactory optionDisplayFactory)
         {
@@ -21,10 +22,10 @@ namespace SmartHead.Quest.Displays
             _createOptionDisplays = new List<OptionDisplay>();
         }
 
-        public void Fill(QuestNode model)
+        public void Fill(IQuestionModel model)
         {
             _text.text = model.NodeText;
-            foreach (var modelOption in model.Options)
+            foreach (var modelOption in model.OptionModels)
             {
                 var optionDisplay = _optionDisplayFactory.Create(modelOption);
                 _createOptionDisplays.Add(optionDisplay);
@@ -32,7 +33,7 @@ namespace SmartHead.Quest.Displays
             }
         }
 
-        private void OptionDisplayOnOptionSelected(QuestNode.Option obj)
+        private void OptionDisplayOnOptionSelected(IOptionModel obj)
         {
             onOptionSelected?.Invoke(obj);
         }

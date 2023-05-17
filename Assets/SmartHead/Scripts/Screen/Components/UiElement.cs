@@ -22,7 +22,7 @@ namespace SmartHead.Screen.Components
             var rect = GetComponent<RectTransform>();
             if (rect)
             {
-                _collider.size = rect.sizeDelta;
+                _collider.size = rect.rect.size;
             }
         }
     }

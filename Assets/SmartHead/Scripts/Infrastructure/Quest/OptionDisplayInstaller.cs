@@ -1,5 +1,6 @@
 using SmartHead.Quest;
 using SmartHead.Quest.Displays;
+using SmartHead.Quest.Interfaces;
 using TMPro;
 using UnityEngine.UI;
 using Zenject;
@@ -8,9 +9,9 @@ namespace SmartHead.Infrastructure.Quest
 {
     public class OptionDisplayInstaller: Installer<QuestNode.Option, OptionDisplayInstaller>
     {
-        private readonly QuestNode.Option _model;
+        private readonly IOptionModel _model;
 
-        public OptionDisplayInstaller(QuestNode.Option model)
+        public OptionDisplayInstaller(IOptionModel model)
         {
             _model = model;
         }

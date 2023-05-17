@@ -1,6 +1,8 @@
 using SmartHead.Infrastructure.Quest.Factories;
 using SmartHead.Quest;
+using SmartHead.Quest.Components;
 using SmartHead.Quest.Displays;
+using SmartHead.Quest.Interfaces;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +21,7 @@ namespace SmartHead.Infrastructure.Quest
         
         [Header("Node")]
         [SerializeField] private TextMeshProUGUI mainText;
-        [SerializeField] private QuestNode startNode;
+        [SerializeField] private NodeBaseQuestProvider questProvider;
 
         [Header("Finish")] 
         [SerializeField] private TextMeshProUGUI finishText;
@@ -28,7 +30,7 @@ namespace SmartHead.Infrastructure.Quest
         public override void InstallBindings()
         {
             Container
-                .BindFactory<QuestNode.Option, OptionDisplay, OptionDisplayFactory>()
+                .BindFactory<IOptionModel, OptionDisplay, OptionDisplayFactory>()
                 .FromSubContainerResolve()
                 .ByNewPrefabInstaller<OptionDisplayInstaller>(optionPref)
                 .UnderTransform(optionParent)
@@ -44,7 +46,7 @@ namespace SmartHead.Infrastructure.Quest
             Container.Bind<Image>().FromInstance(finishImage).AsCached().WhenInjectedInto<QuestFinishDisplay>();
             Container.BindInterfacesAndSelfTo<QuestFinishDisplay>().AsCached();
             
-            Container.Bind<QuestNode>().FromInstance(startNode).AsCached();
+            Container.Bind<IQuestProvider>().FromInstance(questProvider).AsCached();
             
             Container.BindInterfacesAndSelfTo<QuestManager>().AsCached().NonLazy();
         }

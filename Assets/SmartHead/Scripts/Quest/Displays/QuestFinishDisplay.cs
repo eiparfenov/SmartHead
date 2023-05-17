@@ -1,3 +1,4 @@
+using SmartHead.Quest.Interfaces;
 using UnityEngine.UI;
 using TMPro;
 
@@ -14,7 +15,7 @@ namespace SmartHead.Quest.Displays
             _image = image;
         }
 
-        public void Fill(QuestNode result)
+        public void Fill(IQuestionModel result)
         {
             _text.text = result.NodeText;
             if (result.NodeImage != null)

@@ -17,6 +17,7 @@ namespace SmartHead.Quest
         public enum NodeTypes { Options, Result}
         [field: ResizableTextArea]
         [field: SerializeField] public string NodeText { get; private set; }
+        [field: SerializeField] public Sprite NodeImage { get; private set; }
         [field: SerializeField] public NodeTypes NodeType { get; private set; }
         [field: SerializeField] public Option[] Options { get; private set; }
     }

@@ -46,7 +46,7 @@ namespace SmartHead.Infrastructure.Quest
             Container.Bind<Image>().FromInstance(finishImage).AsCached().WhenInjectedInto<QuestFinishDisplay>();
             Container.BindInterfacesAndSelfTo<QuestFinishDisplay>().AsCached();
             
-            Container.Bind<IQuestProvider>().FromInstance(questProvider).AsCached();
+            Container.BindInterfacesTo<NodeBaseQuestProvider>().FromInstance(questProvider).AsCached();
             
             Container.BindInterfacesAndSelfTo<QuestManager>().AsCached().NonLazy();
         }

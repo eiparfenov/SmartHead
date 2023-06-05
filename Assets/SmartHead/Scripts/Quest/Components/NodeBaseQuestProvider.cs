@@ -1,23 +1,25 @@
+using System;
 using System.Linq;
 using SmartHead.Quest.Interfaces;
 using UnityEngine;
 
 namespace SmartHead.Quest.Components
 {
-    public class NodeBaseQuestProvider: MonoBehaviour, IQuestProvider
+    public class NodeBaseQuestProvider: MonoBehaviour, IQuestProviderAction, IQuestProviderEvent
     {
         [SerializeField] private QuestNode startNode;
         private QuestNode _currentNode;
         
-        public IQuestionModel FromPlayerResponse(IOptionModel playerResponseModel)
-        {
-            return (playerResponseModel as QuestNode.Option)!.Node;
-        }
-
-        public IQuestionModel GetStartNode()
+        public event Action<IQuestionModel> onQuestionSet;
+        public void StartOnButtonPressed()
         {
             _currentNode = startNode;
-            return _currentNode;
+            onQuestionSet?.Invoke(_currentNode);
+        }
+
+        public void OptionOnSelected(IOptionModel model)
+        {
+            onQuestionSet?.Invoke((model as QuestNode.Option)!.Node);
         }
     }
 }

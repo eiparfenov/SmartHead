@@ -13,15 +13,17 @@ namespace SmartHead.Quest
         private readonly IScreenControl _screenControl;
         private readonly QuestFinishDisplay _questFinishDisplay;
         private readonly QuestStartDisplay _questStartDisplay;
-        private readonly IQuestProvider _questProvider;
+        private readonly IQuestProviderEvent _questProviderEvent;
+        private readonly IQuestProviderAction _questProviderAction;
 
-        public QuestManager(QuestNodeDisplay questNodeDisplay, IScreenControl screenControl, QuestFinishDisplay questFinishDisplay, QuestStartDisplay questStartDisplay, IQuestProvider questProvider)
+        public QuestManager(QuestNodeDisplay questNodeDisplay, IScreenControl screenControl, QuestFinishDisplay questFinishDisplay, QuestStartDisplay questStartDisplay, IQuestProviderEvent questProviderEvent, IQuestProviderAction questProviderAction)
         {
             _questNodeDisplay = questNodeDisplay;
             _screenControl = screenControl;
             _questFinishDisplay = questFinishDisplay;
             _questStartDisplay = questStartDisplay;
-            _questProvider = questProvider;
+            _questProviderEvent = questProviderEvent;
+            _questProviderAction = questProviderAction;
         }
 
         public void Initialize()
@@ -30,12 +32,27 @@ namespace SmartHead.Quest
             _screenControl.onStart += ScreenControlOnStart;
             _screenControl.onRestart += ScreenControlOnRestart;
             _questStartDisplay.onQuestStarted += QuestStartDisplayOnQuestStarted;
+            _questProviderAction.onQuestionSet += QuestProviderActionOnQuestionSet;
+        }
+
+        private void QuestProviderActionOnQuestionSet(IQuestionModel nextQuestion)
+        {
+            _questNodeDisplay.UnFill();
+            
+            if (nextQuestion.NodeType == NodeTypes.Options)
+            {
+                _questNodeDisplay.Fill(nextQuestion);
+            }
+            else
+            {
+                _questFinishDisplay.Fill(nextQuestion);
+            }
         }
 
         private void QuestStartDisplayOnQuestStarted()
         {
             _questStartDisplay.SetActive(false);
-            _questNodeDisplay.Fill(_questProvider.GetStartNode());
+            _questProviderEvent.StartOnButtonPressed();
         }
 
         private void ScreenControlOnRestart()
@@ -52,21 +69,16 @@ namespace SmartHead.Quest
 
         private void QuestNodeDisplayOnOptionSelected(IOptionModel selectedOption)
         {
-            _questNodeDisplay.UnFill();
-            var nextQuestion = _questProvider.FromPlayerResponse(selectedOption);
-            if (nextQuestion.NodeType == NodeTypes.Options)
-            {
-                _questNodeDisplay.Fill(nextQuestion);
-            }
-            else
-            {
-                _questFinishDisplay.Fill(nextQuestion);
-            }
+            _questProviderEvent.OptionOnSelected(selectedOption);
         }
 
         public void Dispose()
         {
             _questNodeDisplay.onOptionSelected -= QuestNodeDisplayOnOptionSelected;
+            _screenControl.onStart -= ScreenControlOnStart;
+            _screenControl.onRestart -= ScreenControlOnRestart;
+            _questStartDisplay.onQuestStarted -= QuestStartDisplayOnQuestStarted;
+            _questProviderAction.onQuestionSet -= QuestProviderActionOnQuestionSet;
         }
     }
 }

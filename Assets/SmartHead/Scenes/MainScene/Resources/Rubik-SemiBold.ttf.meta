@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 450c3662ecc4fdb40910f879c2e2bbb5
+guid: 472e7ce59f2c0694bb677d8e14ba98b0
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,9 +9,10 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Roboto Condensed
+  - Rubik
   fallbackFontReferences:
-  - {fileID: 12800000, guid: 57cde6005fb941e44bbca1a83d394194, type: 3}
+  - {fileID: 12800000, guid: b891e9572ecfa5840a3e597c0e268087, type: 3}
+  - {fileID: 12800000, guid: eda8e5714ba4a39438d896c79c94b890, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

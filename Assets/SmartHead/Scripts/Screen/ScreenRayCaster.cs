@@ -47,6 +47,8 @@ namespace SmartHead.Screen
             _activeUiElement.GetComponents<IPointerDownHandler>().Foreach(x => x.OnPointerDown(new PointerEventData(_eventSystem){button = PointerEventData.InputButton.Left}));
             _clicks += 1;
             await UniTask.Delay(_settings.PointerShowDelay);
+            if(!_activeUiElement) return; 
+            
             _activeUiElement.GetComponents<IPointerClickHandler>().Foreach(x => x.OnPointerClick(new PointerEventData(_eventSystem){button = PointerEventData.InputButton.Left}));
             _clicks -= 1;
             if(_clicks > 0 || !_activeUiElement) return;

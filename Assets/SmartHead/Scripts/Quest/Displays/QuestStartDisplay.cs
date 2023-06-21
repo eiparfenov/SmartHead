@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
@@ -7,16 +8,18 @@ namespace SmartHead.Quest.Displays
     public class QuestStartDisplay: IInitializable, IDisposable
     {
         private readonly Button _button;
+        private readonly GameObject _screen;
         public event Action onQuestStarted;
 
-        public QuestStartDisplay(Button button)
+        public QuestStartDisplay(Button button, GameObject screen)
         {
             _button = button;
+            _screen = screen;
         }
 
         public void SetActive(bool active)
         {
-            _button.gameObject.SetActive(active);
+            _screen.SetActive(active);
         }
 
         public void Initialize()
